@@ -1,9 +1,40 @@
-
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Signin from "./components/Signin"
+import AdminDashboard from "./components/AdminDashboard";
+import UserDashboard from "./components/UserDashboard";
+import Navbar from "./components/Navbar";
+import Home from "./components/Home";
+
 function App() {
+const [role,setRole] = useState('');
+const handleLogout = ()=>{
+     setRole(null);
+     }
   return (
     <div className="App">
-     <Signin />
+    <Router>
+        <Navbar role={role} onLogout={handleLogout} /> 
+        <Routes>
+          <Route path="/" element={<Signin setRole={setRole} />} />
+          <Route
+            path="/dashboard"
+            element={
+              role === "admin" ? (
+                <AdminDashboard />
+              ) : role === "user" ? (
+                <UserDashboard />
+              ) : (
+                <Navigate to="/" />
+              )
+            }
+            
+          />
+          <Route path="/Home" element= <Home /> />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </Router>
+     
     </div>
   );
 }

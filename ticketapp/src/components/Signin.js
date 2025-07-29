@@ -1,71 +1,54 @@
-import React ,{ useState } from "react";
-import { Box, TextField, Button, Typography } from "@mui/material";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { TextField, Button, Typography } from "@mui/material";
+import "./Signin.css";
+import { useNavigate } from "react-router-dom";
 
+const users = [
+  { username: "admin", password: "admin123", role: "admin" },
+  { username: "user", password: "user123", role: "user" }
+];
 
-// Simulated user
-const hardcodedUser = {
-  username: "admin",
-  password: "admin123"
-};
+function Signin({ setRole }) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError, // ✅ import this!
+    reset,
+  } = useForm();
 
-function Signin() {
-  // State for form inputs and error message
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] =  useState('');
+  const navigate = useNavigate();
 
-  // Handle form submission
- const handleSubmit = (e) => {
-  e.preventDefault();
-  
-  if (!username || !password) {
-    setError("Both fields are required.");
-    return;
-  }
+  const onSubmit = (data) => {
+    const foundUser = users.find(
+      (u) => u.username === data.username && u.password === data.password
+    );
 
-  if (
-    username === hardcodedUser.username &&
-    password === hardcodedUser.password
-  ) {
-    setError(" ");
-    setSuccess("Login successful!");
-  } else {
-    setSuccess(" ");
-    setError("Invalid username or password.");
-  }
-};
+    if (foundUser) {
+      setRole(foundUser.role);
+      reset();
+      navigate("/Dashboard");
+    } else {
+      const usernameMatch = users.find((u) => u.username === data.username);
+      if (!usernameMatch) {
+        setError("username", {
+          type: "manual",
+          message: "Username not found",
+        });
+      } else {
+        setError("password", {
+          type: "manual",
+          message: "Incorrect password",
+        });
+      }
+    }
+  };
 
   return (
-    <Box
-      sx={{
-
-        backgroundImage: 'url("/imgs/bg.jpeg")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        
-
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: "100vh",
-        p: 3
-      }}
-    >
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{
-          backgroundColor: "white",
-          p: 4,
-          borderRadius: 2,
-          boxShadow: 3,
-          maxWidth: 400,
-          width: "100%"
-        }}
-      >
-        <Typography variant="h5" mb={2}>
+    <div className="signin-container">
+      <form onSubmit={handleSubmit(onSubmit)} className="signin-form">
+        <Typography variant="h5" className="signin-title">
           Login
         </Typography>
 
@@ -74,9 +57,9 @@ function Signin() {
           variant="outlined"
           fullWidth
           margin="normal"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
+          {...register("username", { required: "Username is required" })}
+          error={!!errors.username}
+          helperText={errors.username?.message}
         />
 
         <TextField
@@ -85,23 +68,10 @@ function Signin() {
           type="password"
           fullWidth
           margin="normal"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
+          {...register("password", { required: "Password is required" })}
+          error={!!errors.password}
+          helperText={errors.password?.message}
         />
-
-        {error && (
-        <Typography color="error" mt={1}>
-         {error}
-        </Typography>
-        )}
-
-        {success && (
-        <Typography color="primary" mt={1}>
-        {success}
-        </Typography>
-        )}
-
 
         <Button
           variant="contained"
@@ -112,8 +82,8 @@ function Signin() {
         >
           Submit
         </Button>
-      </Box>
-    </Box>
+      </form>
+    </div>
   );
 }
 
