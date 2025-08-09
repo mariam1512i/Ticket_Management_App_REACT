@@ -1,9 +1,16 @@
 // Navbar.js
 import React from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 function Navbar({ role, onLogout }) {
+  const location = useLocation();
+
+  // Don't show Navbar on the login or signup page
+  if (location.pathname === "/" || location.pathname === "/signup") {
+    return null;
+  }
+
   return (
     <AppBar position="static">
       <Toolbar sx={{ justifyContent: "space-between" }}>

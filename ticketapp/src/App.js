@@ -5,6 +5,7 @@ import AdminDashboard from "./components/AdminDashboard";
 import UserDashboard from "./components/UserDashboard";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
+import Signup from "./components/Signup";
 
 function App() {
 const [role,setRole] = useState('');
@@ -17,6 +18,7 @@ const handleLogout = ()=>{
         <Navbar role={role} onLogout={handleLogout} /> 
         <Routes>
           <Route path="/" element={<Signin setRole={setRole} />} />
+          <Route path="/signup" element={<Signup />} />
           <Route
             path="/dashboard"
             element={

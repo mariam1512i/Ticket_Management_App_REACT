@@ -1,87 +1,78 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { TextField, Button, Typography } from "@mui/material";
+import { TextField, Button, Typography, Alert } from "@mui/material";
 import "./Signin.css";
-import { useNavigate } from "react-router-dom";
-
-const users = [
-  { username: "admin", password: "admin123", role: "admin" },
-  { username: "user", password: "user123", role: "user" }
-];
+import { useNavigate, Link } from "react-router-dom";
 
 function Signin({ setRole }) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setError, // ✅ import this!
-    reset,
-  } = useForm();
-
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  const [generalError, setGeneralError] = useState("");
   const navigate = useNavigate();
 
-  const onSubmit = (data) => {
-    const foundUser = users.find(
-      (u) => u.username === data.username && u.password === data.password
-    );
+  const onSubmit = async (data) => {
+    setGeneralError(""); // reset errors
 
-    if (foundUser) {
-      setRole(foundUser.role);
-      reset();
-      navigate("/Dashboard");
-    } else {
-      const usernameMatch = users.find((u) => u.username === data.username);
-      if (!usernameMatch) {
-        setError("username", {
-          type: "manual",
-          message: "Username not found",
-        });
-      } else {
-        setError("password", {
-          type: "manual",
-          message: "Incorrect password",
-        });
+    try {
+      const res = await fetch("http://localhost:5000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        setGeneralError(result.message || "Login failed. Please try again.");
+        return;
       }
+
+      // Extract role from returned user object
+      if (result.user && result.user.role) {
+        setRole(result.user.role);
+      }
+
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+      setGeneralError("Something went wrong. Please try again later.");
     }
   };
 
   return (
-    <div className="signin-container">
-      <form onSubmit={handleSubmit(onSubmit)} className="signin-form">
-        <Typography variant="h5" className="signin-title">
-          Login
-        </Typography>
+    <div className="container">
+      <form onSubmit={handleSubmit(onSubmit)} className="form">
+        <Typography variant="h5" className="signin-title">Login</Typography>
+
+        {generalError && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {generalError}
+          </Alert>
+        )}
 
         <TextField
           label="Username"
-          variant="outlined"
-          fullWidth
-          margin="normal"
           {...register("username", { required: "Username is required" })}
           error={!!errors.username}
           helperText={errors.username?.message}
+          fullWidth
         />
 
         <TextField
           label="Password"
-          variant="outlined"
           type="password"
-          fullWidth
-          margin="normal"
           {...register("password", { required: "Password is required" })}
           error={!!errors.password}
           helperText={errors.password?.message}
+          fullWidth
         />
 
-        <Button
-          variant="contained"
-          type="submit"
-          color="primary"
-          fullWidth
-          sx={{ mt: 2 }}
-        >
+        <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
           Submit
         </Button>
+
+        <Typography sx={{ mt: 2 }}>
+          Don't have an account? <Link to="/signup">Sign up</Link>
+        </Typography>
       </form>
     </div>
   );
