@@ -14,7 +14,7 @@ app.use(express.json()); // Parse JSON bodies
 // Connect to MongoDB Atlas
 const uri = "mongodb+srv://mariam:1234@cluster0.lzonp6g.mongodb.net/ticketApp";
 mongoose.connect(uri, {
-  useNewUrlParser: true,
+  useNewUrlParser: true, 
   useUnifiedTopology: true
 })
 .then(() => {console.log("Connected to MongoDB Atlas")

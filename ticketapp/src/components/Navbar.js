@@ -1,12 +1,18 @@
 // Navbar.js
 import React from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 function Navbar({ role, onLogout }) {
   const location = useLocation();
+  const navigate = useNavigate();
 
-  // Don't show Navbar on the login or signup page
+  const handleLogoutClick = () => {
+    onLogout(); // clears role in App
+    navigate("/"); // redirect to signin
+  };
+
+  // Hide Navbar on login or signup
   if (location.pathname === "/" || location.pathname === "/signup") {
     return null;
   }
@@ -15,7 +21,6 @@ function Navbar({ role, onLogout }) {
     <AppBar position="static">
       <Toolbar sx={{ justifyContent: "space-between" }}>
         <Typography variant="h6">Ticket App</Typography>
-
         <Box>
           {role && (
             <Button color="inherit" component={Link} to="/Home">
@@ -33,7 +38,7 @@ function Navbar({ role, onLogout }) {
             </Button>
           )}
           {role && (
-            <Button color="inherit" onClick={onLogout}>
+            <Button color="inherit" onClick={handleLogoutClick}>
               Logout
             </Button>
           )}
