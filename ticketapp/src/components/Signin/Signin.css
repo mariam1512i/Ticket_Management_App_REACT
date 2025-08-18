@@ -12,6 +12,7 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  
   justify-content: center;
   min-height: 100vh;
   padding: 24px;
@@ -28,7 +29,7 @@ html, body {
 }
 
 /* Title styling */
-.signin-title {
+.title {
   margin-bottom: 16px;
   text-align: center;
 }

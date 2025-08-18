@@ -1,12 +1,13 @@
 // App.js
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import Signin from "./components/Signin";
-import AdminDashboard from "./components/AdminDashboard";
-import UserDashboard from "./components/UserDashboard";
-import Navbar from "./components/Navbar";
-import Home from "./components/Home";
-import Signup from "./components/Signup";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Signin from "./components/Signin/Signin";
+import AdminDashboard from "./components/Dashboards/AdminDashboard";
+import UserDashboard from "./components/Dashboards/UserDashboard";
+import Navbar from "./components/Navbar/Navbar";
+import Home from "./components/Home/Home";
+import Signup from "./components/Signup/Signup";
+import ProtectedRoute from "./components/Home/ProtectedRoute";
 
 function App() {
   const [role, setRole] = useState('');
@@ -35,7 +36,14 @@ function App() {
               )
             }
           />
-          <Route path="/Home" element={<Home />} />
+          <Route
+            path="/home"
+            element={
+            <ProtectedRoute role={role}>
+            <Home />
+            </ProtectedRoute>
+                    }
+            />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>

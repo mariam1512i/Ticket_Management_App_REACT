@@ -13,7 +13,7 @@ function Navbar({ role, onLogout }) {
   };
 
   // Hide Navbar on login or signup
-  if (location.pathname === "/" || location.pathname === "/signup") {
+  if (location.pathname === "/" || location.pathname === "/signup" ) {
     return null;
   }
 

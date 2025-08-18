@@ -41,7 +41,7 @@ function Signin({ setRole }) {
   return (
     <div className="container">
       <form onSubmit={handleSubmit(onSubmit)} className="form">
-        <Typography variant="h5" className="signin-title">Login</Typography>
+        <Typography variant="h5" className="title">Login</Typography>
 
         {generalError && (
           <Alert severity="error" sx={{ mb: 2 }}>
@@ -55,6 +55,7 @@ function Signin({ setRole }) {
           error={!!errors.username}
           helperText={errors.username?.message}
           fullWidth
+          sx={{ mb: 2 }}
         />
 
         <TextField
